@@ -74,6 +74,8 @@ class Hitherfield_Computing {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_metabox_hooks();
+		$this->define_metabox_save_hooks();
 		$this->define_public_hooks();
 
 	}
@@ -112,6 +114,16 @@ class Hitherfield_Computing {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-hitherfield-computing-admin.php';
+
+		/**
+		 * The class responsible for defining all actions relating to creating metaboxes.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-hitherfield-computing-admin-metabox.php';
+		
+		/**
+		 * The class responsible for defining all actions relating to saving metaboxes.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-hitherfield-computing-admin-save-metabox.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -163,8 +175,35 @@ class Hitherfield_Computing {
 
 		//Hide admin menu items from contributors
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'manage_admin_menu_contributors' );
+		//Hide admin menu items from contributors
+		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'manage_admin_bar_contributors' );
 
 	}
+
+	/**
+	 * Register all of the hooks related to metaboxes
+	 *
+	 * @since 		1.0.0
+	 * @access 		private
+	 */
+	private function define_metabox_hooks() {
+		$plugin_metaboxes = new Hitherfield_Computing_Admin_Metaboxes( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'add_meta_boxes', $plugin_metaboxes, 'hitherfield_computing_add_metaboxes' );
+
+	}
+
+	/**
+	 * Register all of the hooks related to saving metaboxes
+	 *
+	 * @since 		1.0.0
+	 * @access 		private
+	 */
+	private function define_metabox_save_hooks() {
+		$plugin_save_metaboxes = new Hitherfield_Computing_Admin_Save_Metaboxes( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'save_post', $plugin_save_metaboxes, 'hitherfield_computing_meta_save' );
+ 	}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality

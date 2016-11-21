@@ -1,32 +1,50 @@
-(function( $ ) {
-	'use strict';
+/*
+ * Attaches the image uploader to the input field
+ */
+jQuery(document).ready(function($){
+    
+    // Add files / images to additional resources
+    $('#insert-media-button').on('click', function(e){
+        alert("Remember, these images will go online. Try and include a photo that does not show your face.");
+    });
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+    //Create list to be populated with pupil names.
+    var pupilNamesList = [];
 
-})( jQuery );
+    // Populate list with pupil names. 
+    // These values come from class-hitherfield-computing-admin.php enqueue_scripts();
+    // Values are transfered to JS using wp_localize_script hack
+    pupil_names.forEach(function(item) {
+    	pupilNamesList.push(item);
+	});
+
+    // Set up autocomplete on pupil names.
+    $( "#pupil-name-input" ).autocomplete({
+        source: pupilNamesList
+    });
+
+
+    //TODO Define this as a fucntion to avoid repetition.
+
+    $( "#pupil-name-input" ).keydown(function() {
+    	console.log($("#pupil-name-input").val());
+    	console.log($.inArray( $("#pupil-name-input").val(), pupilNamesList));
+	 	if ( ($.inArray( $("#pupil-name-input").val(), pupilNamesList )) ) {
+      		$("#pupil-name-input-help").text('Not in list');
+      	} else {
+      		$("#pupil-name-input-help").text('');
+      	}
+	});
+
+	$(  "#pupil-name-input" ).on( "autocompleteselect", function( event, ui ) {
+		console.log($("#pupil-name-input").val());
+    	console.log($.inArray( $("#pupil-name-input").val(), pupilNamesList));
+	 	if ( ($.inArray( $("#pupil-name-input").val(), pupilNamesList )) ) {
+      		$("#pupil-name-input-help").text('Not in list');
+      	} else {
+      		$("#pupil-name-input-help").text('');
+      	}
+	} );
+
+
+});

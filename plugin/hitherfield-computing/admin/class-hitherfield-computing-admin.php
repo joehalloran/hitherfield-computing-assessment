@@ -98,6 +98,19 @@ class Hitherfield_Computing_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/hitherfield-computing-admin.js', array( 'jquery' ), $this->version, false );
 
+		wp_enqueue_script('jquery-ui-autocomplete');
+
+		// Localize the script with new data
+		$pupilNames = $terms = get_terms( array(
+		    'taxonomy' => 'cat_pupil_name',
+		    'fields' => 'names',
+		    'childless' => true, //Remove parent categories (i.e. classnames from results)
+		    'hide_empty' => false,
+		) );
+		wp_localize_script( $this->plugin_name, 'pupil_names', $pupilNames );
+
+		
+    
 	}
 
 	/**
@@ -185,7 +198,7 @@ class Hitherfield_Computing_Admin {
 	}
 
 	/**
-	 * Hide comments page for contributors
+	 * Hide admin pages for contributors
 	 *
 	 * @since 	1.0.0
 	 * @access 	public
@@ -197,6 +210,27 @@ class Hitherfield_Computing_Admin {
 	 
 	    if ( !current_user_can( 'moderate_comments' ) ) {
 			remove_menu_page( 'edit-comments.php' );
+				remove_menu_page( 'profile.php' );
+				remove_submenu_page( 'users.php', 'profile.php' );
+		 }
+	}
+
+	/**
+	 * Hide edit wordpress admin bar contributors
+	 *
+	 * @since 	1.0.0
+	 * @access 	public
+	 * @uses 	
+	 */
+	public function manage_admin_bar_contributors() {
+	 
+	    global $user_ID;
+	 
+	    if ( !current_user_can( 'moderate_comments' ) ) {
+
+			global $wp_admin_bar;
+   			$wp_admin_bar->remove_menu('my-account');
+   			
 		 }
 	}
 
@@ -310,10 +344,10 @@ class Hitherfield_Computing_Admin {
 		$opts['show_ui']								= TRUE;
 		$opts['sort'] 									= '';
 		//$opts['update_count_callback'] 					= '';
-		$opts['capabilities']['assign_terms'] 			= 'assign_{$tax_name}';
-		$opts['capabilities']['delete_terms'] 			= 'manage_{$tax_name}';
-		$opts['capabilities']['edit_terms'] 			= 'manage_{$tax_name}';
-		$opts['capabilities']['manage_terms'] 			= 'manage_{$tax_name}';
+		$opts['capabilities']['assign_terms'] 			= "assign_{$tax_name}";
+		$opts['capabilities']['delete_terms'] 			= "manage_{$tax_name}";
+		$opts['capabilities']['edit_terms'] 			= "manage_{$tax_name}";
+		$opts['capabilities']['manage_terms'] 			= "manage_{$tax_name}";
 		$opts['labels']['add_new_item'] 				= esc_html__( "Add New {$single}", 'ldnclc-plugin' );
 		$opts['labels']['add_or_remove_items'] 			= esc_html__( "Add or remove {$plural}", 'ldnclc-plugin' );
 		$opts['labels']['all_items'] 					= esc_html__( $plural, 'ldnclc-plugin' );
@@ -336,7 +370,7 @@ class Hitherfield_Computing_Admin {
 		$opts['rewrite']['slug']						= esc_html__( strtolower( $tax_name ), 'ldnclc-plugin' );
 		$opts['rewrite']['with_front']					= FALSE;
 		//$opts = apply_filters( '', $opts );
-		
+
 		register_taxonomy( $tax_name, $cpt , $opts );
 	}
 
