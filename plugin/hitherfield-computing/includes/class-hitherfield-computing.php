@@ -189,7 +189,11 @@ class Hitherfield_Computing {
 	private function define_metabox_hooks() {
 		$plugin_metaboxes = new Hitherfield_Computing_Admin_Metaboxes( $this->get_plugin_name(), $this->get_version() );
 
+		// Create metaboxes
 		$this->loader->add_action( 'add_meta_boxes', $plugin_metaboxes, 'hitherfield_computing_add_metaboxes' );
+
+		// Hide certain metaboxes by default
+		$this->loader->add_action( 'default_hidden_meta_boxes', $plugin_metaboxes, 'hitherfield_computing_hidden_meta_boxes', 10, 2 );
 
 	}
 

@@ -101,7 +101,7 @@ class Hitherfield_Computing_Admin {
 		wp_enqueue_script('jquery-ui-autocomplete');
 
 		// Localize the script with new data
-		$pupilNames = $terms = get_terms( array(
+		$pupilNames = get_terms( array(
 		    'taxonomy' => 'cat_pupil_name',
 		    'fields' => 'names',
 		    'childless' => true, //Remove parent categories (i.e. classnames from results)

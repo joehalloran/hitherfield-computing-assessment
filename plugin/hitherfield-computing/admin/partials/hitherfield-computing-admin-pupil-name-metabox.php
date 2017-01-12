@@ -21,10 +21,3 @@
 </div>
 <p id="pupil-name-input-help" style="color: red;"></p>
 
-
-<?
-foreach($pupilNames as $name) {
-	$cat_id = get_cat_ID ( $name );
-	echo $cat_id.'<br />';
-}
-?>

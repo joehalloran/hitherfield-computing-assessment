@@ -84,6 +84,41 @@ class Hitherfield_Computing_Admin_Metaboxes
 	    include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/hitherfield-computing-admin-pupil-name-metabox.php';
 	}
 
-
-
+	/**
+	 * Hides certain metaboxes by default to create a tidy layout on pupil work editor.
+	 *
+	 * @since 	1.0.0
+	 * @access 	public
+	 * @return 	hidden - a list of metaboxes to hide by default.
+	 */
+	public function hitherfield_computing_hidden_meta_boxes( $hidden, $screen ) {
+		// Grab the current post type
+		$post_type = $screen->post_type;
+		// If we're on a 'pupil work' item
+		if ( $post_type == 'pupil_work' ) {
+			// Define which meta boxes we wish to hide
+			$hidden = array(
+				'authordiv',
+				'revisionsdiv',
+			    'categorydiv',
+			    'commentstatusdiv',
+			    'commentsdiv',
+			    'formatdiv',
+			    'pageparentdiv',
+			    'postcustom',
+			    'postexcerpt',
+			    'postimagediv',
+			    'slugdiv',
+			    'tagsdiv-post_tag',
+			    'cat_pupil_namediv',
+			    'trackbacksdiv',
+			);
+			// Pass our new defaults onto WordPress
+			return $hidden;
+		}
+		// If we are not on a 'pupil work' item, pass the
+		// original defaults, as defined by WordPress
+		return $hidden;
+	}
+	
 }
